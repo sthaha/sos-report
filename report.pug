@@ -1,0 +1,20 @@
+//- report.pug
+doctype html
+html
+  body
+    div
+      h4 Done
+      ul
+        each val in done
+          li
+            a(href=val.href) #{val.href.substr(val.href.lastIndexOf('/') + 1)}
+            span  - #{val.text}
+
+      h4 In Progress
+      ul
+        each val in inProgress
+          li
+            a(href=val.href) #{val.href.substr(val.href.lastIndexOf('/') + 1)}
+            span  - #{val.text}
+
+
