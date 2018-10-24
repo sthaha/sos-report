@@ -69,8 +69,8 @@ async function main() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  await page.goto(projectBoard)
-  await page.waitFor(5*1000)
+  await page.goto(projectBoard, {waitUntil: 'networkidle2'})
+
 
   const cardsInColumn = cardsInPage(page)
 
