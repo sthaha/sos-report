@@ -11,7 +11,9 @@ const card = 'a.js-project-card-issue-link'
 const columns = {
   inProgress : '#column-cards-2307988',
   blocked : '#column-cards-2313160',
-  done: '#column-cards-3019981',
+  // done: '#column-cards-3019981',
+   // done: '#column-cards-3134244',
+   done: '#column-cards-3248673'
 }
 
 interface card {
@@ -24,12 +26,6 @@ interface status {
   done:  Array<card>
 }
 
-const cardsInPage = (page: puppeteer.Page) => ((column: string): Promise<Array<card>> => {
-  return page.$$eval(
-    `${column} ${card}`,
-    (nodes:any) => nodes.map((n: any) => <card>{text: n.innerText, href: n.href } )
-  )
-})
 
 const render = pug.compileFile('report.pug');
 
@@ -62,18 +58,46 @@ function renderHTML() {
   fs.writeFileSync('report.html', render(data))
 }
 
+const cardsInPage = (page: puppeteer.Page) => ((column: string): Promise<Array<card>> => {
+  return page.$$eval(
+    `${column} ${card}`,
+    (nodes:any) => nodes.map((n: any) => <card>{text: n.innerText, href: n.href } )
+  )
+})
 
+async function mainx() {
+  // DEBUG
+  const browser = await puppeteer.launch({headless: false});
+  // const browser = await puppeteer.launch();
+  const page = (await browser.pages())[0];
+
+  await page.goto(projectBoard, {waitUntil: 'networkidle2'})
+  // await page.waitFor(2*1000)
+  // #column-3134244 > div.clearfix.js-details-container.details-container.Details.js-add-note-container > div.hide-sm.position-relative.p-sm-2 >
+  // page.
+
+  console.log("........................................")
+  const column = await page.$$eval(
+    'h4 > span.js-project-column-name',
+    (nodes:any) => nodes.find((n: any) => {
+      console.log(n.innerText, n.innerText === "Done")
+      return n.innerText === "Done"
+    })
+  )
+  console.log("........................................")
+  console.log("column: ", column)
+  await browser.close();
+
+}
 async function main() {
   // DEBUG
-  // const browser = await puppeteer.launch({headless: false});
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless: false});
+  // const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
   await page.goto(projectBoard, {waitUntil: 'networkidle2'})
 
-
   const cardsInColumn = cardsInPage(page)
-
 
   const inProgress = await cardsInColumn(columns.inProgress)
   const blocked = await cardsInColumn(columns.blocked)
