@@ -10,6 +10,7 @@ const card = 'a.js-project-card-issue-link'
 
 const columns = {
   inProgress : '#column-cards-2307988',
+  inReview: '#column-cards-3967737',
   blocked : '#column-cards-2313160',
   // done: '#column-cards-3019981',
    // done: '#column-cards-3134244',
@@ -100,13 +101,14 @@ async function main() {
   const cardsInColumn = cardsInPage(page)
 
   const inProgress = await cardsInColumn(columns.inProgress)
+  const inReview = await cardsInColumn(columns.inReview)
   const blocked = await cardsInColumn(columns.blocked)
   const done = await cardsInColumn(columns.done)
 
   browser.close();
 
   const data : status =  {
-    inProgress: [...inProgress, ...blocked],
+    inProgress: [...inProgress,...inReview,...blocked],
     done
   }
 
