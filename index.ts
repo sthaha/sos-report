@@ -11,9 +11,8 @@ const card = 'a.js-project-card-issue-link'
 const columns = {
   inProgress : '#column-cards-2307988',
   blocked : '#column-cards-2313160',
-  // done: '#column-cards-3019981',
-   // done: '#column-cards-3134244',
-   done: '#column-cards-3248673'
+  waiting: '#column-cards-3967737',
+  done: '#column-cards-3248673'
 }
 
 interface card {
@@ -101,12 +100,13 @@ async function main() {
 
   const inProgress = await cardsInColumn(columns.inProgress)
   const blocked = await cardsInColumn(columns.blocked)
+  const waiting = await cardsInColumn(columns.waiting)
   const done = await cardsInColumn(columns.done)
 
   browser.close();
 
   const data : status =  {
-    inProgress: [...inProgress, ...blocked],
+    inProgress: [...inProgress, ...blocked, ...waiting],
     done
   }
 
